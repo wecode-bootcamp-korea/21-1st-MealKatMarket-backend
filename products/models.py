@@ -7,7 +7,7 @@ class Category(models.Model):
         db_table = 'categories'
 
 class Food(models.Model):
-    food_name        = models.CharField(max_length=50, unique=True)
+    name             = models.CharField(max_length=50, unique=True)
     price            = models.DecimalField(max_digits=10, decimal_places=2)
     discount         = models.PositiveIntegerField()
     discounted_price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -37,19 +37,19 @@ class FoodImage(models.Model):
         db_table = 'food_images'
 
 class RequiredOption(models.Model):
-    food            = models.ForeignKey(Food, on_delete=models.CASCADE)
-    option_name     = models.CharField(max_length=30, unique=True)
-    option_price    = models.DecimalField(max_digits=10, decimal_places=2)
-    option_quantity = models.PositiveIntegerField()
+    food     = models.ForeignKey(Food, on_delete=models.CASCADE)
+    name     = models.CharField(max_length=30, unique=True)
+    price    = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField()
 
     class Meta:
         db_table = 'required_options'
 
 class SelectOption(models.Model):
-    food            = models.ForeignKey(Food, on_delete=models.CASCADE)
-    option_name     = models.CharField(max_length=30, unique=True)
-    option_price    = models.DecimalField(max_digits=10, decimal_places=2)
-    option_quantity = models.PositiveIntegerField()
+    food     = models.ForeignKey(Food, on_delete=models.CASCADE)
+    name     = models.CharField(max_length=30, unique=True)
+    price    = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField()
 
     class Meta:
         db_table = 'select_options'
