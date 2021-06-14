@@ -9,10 +9,11 @@ from users.models    import User
 from products.models import Food, RequiredOption, SelectOption
 from my_settings     import SECRET_KEY
 
-def decode_password(token):
-    decoded_token = jwt.decode(token,SECRET_KEY, algorithms='HS256')
+def decorator_decode():
+    def decode_password(token):
+        decoded_token = jwt.decode(token,SECRET_KEY, algorithms='HS256')
 
-    return decoded_token['id']
+        return decoded_token['id']
 
 class CartView(View):
     def post(self, request):
