@@ -5,6 +5,7 @@ from django.views      import View
 
 from my_settings import SECRET_KEY, ALGORITHM
 from .models     import User
+from .utils      import login_decorator
 
 class SignUpView(View):
     def post(self, request):
@@ -41,8 +42,7 @@ class SignUpView(View):
 
         except KeyError:
             return JsonResponse({'message':'KEY_ERROR'}, status = 400)
-        except User.DoesNotExist:
-            return JsonResponse({'message':'INVALID_USER'}, status = 400)
+        
 
 
 class SignInView(View):
