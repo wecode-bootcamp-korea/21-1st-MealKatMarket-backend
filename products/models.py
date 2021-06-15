@@ -1,5 +1,7 @@
 from django.db import models
 
+from carts.models import Cart
+
 class Category(models.Model):
     category_name = models.CharField(max_length=20)
 
@@ -35,20 +37,20 @@ class FoodImage(models.Model):
     class Meta:
         db_table = 'food_images'
 
-class RequiredOption(models.Model):
-    food     = models.ForeignKey(Food, on_delete=models.CASCADE)
-    name     = models.CharField(max_length=30, unique=True)
-    price    = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.PositiveIntegerField()
+class Option(models.Model):
+    food        = models.ForeignKey(Food, on_delete=models.CASCADE)
+    name        = models.CharField(max_length=50, unique=True)
+    price       = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity    = models.IntegerField()
+    option_type = models.CharField(max_length=20)
 
     class Meta:
-        db_table = 'required_options'
+        db_table = 'options'
 
-class SelectOption(models.Model):
-    food     = models.ForeignKey(Food, on_delete=models.CASCADE)
-    name     = models.CharField(max_length=30, unique=True)
-    price    = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.PositiveIntegerField()
+class OptionItem(models.Model):
+    cart   = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    option = models.ForeignKey(Option, on_delete=models.CASCADE)
+    count  = models.IntegerField()
 
     class Meta:
-        db_table = 'select_options'
+        db_table = 'options_items'
