@@ -8,4 +8,4 @@ class Cart(models.Model):
     count       = models.IntegerField()
 
     class Meta:
-        db_table = 'carts'
+         db_table = 'carts'
