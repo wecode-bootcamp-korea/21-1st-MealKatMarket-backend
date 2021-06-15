@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
     'products',
-    'carts'
+    'carts',
+    'wishes'
 ]
 
 MIDDLEWARE = [
