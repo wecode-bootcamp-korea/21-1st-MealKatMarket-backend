@@ -4,41 +4,23 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.http            import JsonResponse
 from django.views           import View
 
-from .models      import CategoryFood, Food, Category, FoodImage, RequiredOption, SelectOption
+from .models      import Food
 
 class FoodView(View):
-    def get(self, request):
+    def get(self, request, food_id):
         try:
-            food_id          = request.GET['food_id']
-            category_id      = request.GET['category_id']
             food             = Food.objects.get(id=food_id)
-            recommend_foods  = CategoryFood.objects.filter(category=category_id)
-            recommend_list   = []
+            recomanded_foods = Food.objects.filter(
+                categoryfood__category_id=food.categoryfood_set.first().id
+            )
 
-            if not recommend_foods.exists():
-                recommend_list = []
-            else: 
-                for recommend_food in recommend_foods:
-                    if recommend_food.food !=food:
-                        if recommend_food.food.foodimage_set.first():
-                            recommend_image = recommend_food.food.foodimage_set.first()
-                            recommend_image = recommend_image.image_url
-                        else:
-                            recommend_image = ''
-
-                        recommend_list.append({
-                                'name'  : recommend_food.food.name,
-                                'price' : recommend_food.food.price,
-                                'image' : recommend_image
-                        })
-            
             required_option = [{
                     'id'      : required_option.id,
                     'food_id' : food.id,
                     'name'    : required_option.name,
                     'price'   : required_option.price
                 }for required_option in food.requiredoption_set.all()]
-            
+
             select_option = [{
                     'id'      : select_option.id,
                     'food_id' : food.id,
@@ -59,12 +41,17 @@ class FoodView(View):
                 'image'            : [image.image_url for image in food.foodimage_set.all()],
                 'required_food'    : required_option,
                 'select_food'      : select_option,
-                'recommend_food'    : recommend_list
+                'recommend_food'   : [{
+                    'name'  : food.name,
+                    'price' : food.price,
+                    'image' : food.foodimage_set.filter(food=food).first().image_url
+                } for food in recomanded_foods]
             }
 
             return JsonResponse({'message':result}, status=200)
 
         except Food.DoesNotExist:
             return JsonResponse({'message':'NOT EXIST'}, status=404)
+
         except MultipleObjectsReturned:
-            return JsonResponse({'message':'MULITIPLE FOODS'}, status=400)
+            return JsonResponse({'message':'MULITIPLE FOODS'}, status=400) 
