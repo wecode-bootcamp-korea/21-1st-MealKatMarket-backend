@@ -29,7 +29,7 @@ class FoodView(View):
                     'price'   : select_option.price,
                 }for select_option in food.selectoption_set.all()]
             
-            if Wish.objects.get(food=food):
+            if food.wish_set.get(food=food):
                 wish_status = True
             else:
                 wish_status = False
@@ -52,7 +52,7 @@ class FoodView(View):
                     'price' : food.price,
                     'image' : food.foodimage_set.filter(food=food).first().image_url
                 } for food in recomanded_foods],
-                'wish' : wish_status
+                'wish_status' : wish_status
             }
 
             return JsonResponse({'message':result}, status=200)
