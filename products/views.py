@@ -4,7 +4,8 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.http            import JsonResponse
 from django.views           import View
 
-from .models      import Food
+from .models       import Food
+from wishes.models import Wish
 
 class FoodView(View):
     def get(self, request, food_id):
@@ -27,6 +28,11 @@ class FoodView(View):
                     'name'    : select_option.name,
                     'price'   : select_option.price,
                 }for select_option in food.selectoption_set.all()]
+            
+            if Wish.objects.get(food=food):
+                wish_status = True
+            else:
+                wish_status = False
 
             result = {
                 'name'             : food.name,
@@ -45,7 +51,8 @@ class FoodView(View):
                     'name'  : food.name,
                     'price' : food.price,
                     'image' : food.foodimage_set.filter(food=food).first().image_url
-                } for food in recomanded_foods]
+                } for food in recomanded_foods],
+                'wish' : wish_status
             }
 
             return JsonResponse({'message':result}, status=200)
