@@ -9,11 +9,10 @@ class Category(models.Model):
 class Food(models.Model):
     name             = models.CharField(max_length=50, unique=True)
     price            = models.DecimalField(max_digits=10, decimal_places=2)
-    discount         = models.PositiveIntegerField()
+    discount         = models.PositiveIntegerField(default=0)
     discounted_price = models.DecimalField(max_digits=10, decimal_places=2)
     star_score       = models.DecimalField(max_digits=2, decimal_places=1)
     review_count     = models.PositiveIntegerField()
-    delivery_image   = models.URLField()
     detail_image     = models.URLField()
     create_at        = models.DateTimeField()
     update_at        = models.DateTimeField()

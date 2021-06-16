@@ -17,5 +17,6 @@ Including another URLconf
 from django.urls import path, include
 
 urlpatterns = [
-   path('wishes',include('wishes.urls'))
+    path('wishes',include('wishes.urls')),
+    path('users', include('users.urls'))
 ]
