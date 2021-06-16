@@ -1,4 +1,4 @@
-import json
+import json, requests
 
 from django.http      import JsonResponse
 from django.views     import View
@@ -7,10 +7,17 @@ from django.db.utils  import IntegrityError
 from .models         import Wish
 from products.models import Food
 from users.models    import User
+from users.utils     import login_decorator
 
 class WishView(View):
-    def post(self, request, food_id):
+    @login_decorator
+    def post(self, request):
         try:
+            print('0---0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0--0--0-0-0-')
+            food_id = request.GET['food_id']
+            user = request.users
+            print(user)
+            
             food = Food.objects.get(id=food_id)
 
             #임시 id 객체 가져오기 및 토근에서 user 정보 가져오기 기능 추가
@@ -48,4 +55,8 @@ class WishView(View):
             return JsonResponse({'message':'SUCCESS'}, status=200)
         
         except Food.DoesNotExist:
-           return JsonResponse({'message':'NOT EXIST'}, status=404) 
+           return JsonResponse({'message':'NOT EXIST'}, status=404)
+    
+    # def get(self, request):
+    #     try:
+            
