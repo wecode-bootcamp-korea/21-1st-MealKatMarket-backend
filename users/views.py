@@ -52,7 +52,6 @@ class SignInView(View):
             users = User.objects.get(email = data['email'])
 
             if bcrypt.checkpw(data['password'].encode('utf-8'),users.password.encode('utf-8')):
-                print('----------------------------------------------')
                 acess_token = jwt.encode({'id':users.id}, SECRET_KEY, ALGORITHM)
 
                 return JsonResponse({'acess_token':acess_token}, status = 200)
