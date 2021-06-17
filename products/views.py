@@ -3,7 +3,11 @@ import json
 from django.core.exceptions import MultipleObjectsReturned
 from django.http            import JsonResponse
 from django.views           import View
+<<<<<<< HEAD
+#from django.db.models       import Q
+=======
 from django.db.models       import Q
+>>>>>>> main
 
 from .models import Food
 
@@ -87,4 +91,27 @@ class FoodView(View):
             return JsonResponse({'message':'NOT EXIST'}, status=404)
 
         except MultipleObjectsReturned:
-            return JsonResponse({'message':'MULITIPLE FOODS'}, status=400) 
+            return JsonResponse({'message':'MULITIPLE FOODS'}, status=400)
+
+class SearchView(View):
+       def get(self, request):
+            food_search = request.GET.get('food_search', None)
+
+            if not food_search:
+                return JsonResponse({'product_list' : []}, status=200)
+
+            foods = Food.objects.filter(name__icontains=food_search)
+            product_list = [{
+                'id'                    : foods.id,
+                'title_name'            : foods.name,
+                'price'                 : foods.price,
+                'detail_image'          : foods.detail_image.first().image_url,
+                'discount'              : foods.discount,
+                'discounted_price'      : foods.discounted_price,
+                'review_count'          : foods.review_count
+            } for food in foods] if foods else []
+                    
+            return JsonResponse({'product_list' : product_list}, status=200)
+
+
+            
