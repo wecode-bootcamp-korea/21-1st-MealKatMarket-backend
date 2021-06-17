@@ -33,10 +33,9 @@ class WishView(View):
             return JsonResponse({'message':'FOOD INVALID'}, status=400)
     
     @login_decorator
-    def delete(self, request):
+    def delete(self, request, food_id):
         try:
-            data = json.loads(request.body)
-            food = Food.objects.get(id=data['food_id'])
+            food = Food.objects.get(id=food_id)
             user = request.users
             wish = Wish.objects.get(user=user, food=food)
 
