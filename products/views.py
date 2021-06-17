@@ -94,9 +94,9 @@ class FoodView(View):
 class WishFoodView(View):
     @login_decorator
     def get(self, request, food_id):
-        result = (True if Wish.objects.filter(user=request.users, food_id=food_id) else False)
+        is_wised = Wish.objects.filter(user=request.users, food_id=food_id).exists()
 
-        return JsonResponse({'wish_status' : result}, status=200)
+        return JsonResponse({'wish_status' : is_wised}, status=200)
 
 class SearchView(View):
        def get(self, request):
