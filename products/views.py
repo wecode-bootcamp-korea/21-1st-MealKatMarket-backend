@@ -1,15 +1,13 @@
 import json
+from users.utils import login_decorator
 
 from django.core.exceptions import MultipleObjectsReturned
 from django.http            import JsonResponse
 from django.views           import View
-<<<<<<< HEAD
-#from django.db.models       import Q
-=======
 from django.db.models       import Q
->>>>>>> main
 
-from .models import Food
+from .models       import Food
+from wishes.models import Wish
 
 class FoodlistView(View):
     def get(self, request):
@@ -64,7 +62,7 @@ class FoodView(View):
                     'name'    : select_option.name,
                     'price'   : select_option.price,
                 }for select_option in food.selectoption_set.all()]
-
+            
             result = {
                 'name'             : food.name,
                 'price'            : food.price,
@@ -82,7 +80,7 @@ class FoodView(View):
                     'name'  : food.name,
                     'price' : food.price,
                     'image' : food.foodimage_set.filter(food=food).first().image_url
-                } for food in recomanded_foods]
+                } for food in recomanded_foods],
             }
 
             return JsonResponse({'message':result}, status=200)
@@ -91,7 +89,14 @@ class FoodView(View):
             return JsonResponse({'message':'NOT EXIST'}, status=404)
 
         except MultipleObjectsReturned:
-            return JsonResponse({'message':'MULITIPLE FOODS'}, status=400)
+            return JsonResponse({'message':'MULITIPLE FOODS'}, status=400) 
+    
+class WishFoodView(View):
+    @login_decorator
+    def get(self, request, food_id):
+        is_wised = Wish.objects.filter(user=request.users, food_id=food_id).exists()
+
+        return JsonResponse({'wish_status' : is_wised}, status=200)
 
 class SearchView(View):
        def get(self, request):
