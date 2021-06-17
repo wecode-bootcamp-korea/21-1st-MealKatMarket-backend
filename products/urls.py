@@ -1,16 +1,9 @@
 from django.urls import path
 
-<<<<<<< HEAD
-from .views import FoodView, SearchView
+from .views import FoodView, SearchView,FoodlistView
 
 urlpatterns = [
-   path('<int:food_id>',FoodView.as_view()),
-   path('', SearchView.as_view())
-=======
-from .views import FoodlistView,FoodView
-
-urlpatterns = [
+    path('', SearchView.as_view()),
     path('', FoodlistView.as_view()),
     path('/<int:food_id>',FoodView.as_view())
->>>>>>> main
 ]
