@@ -13,18 +13,14 @@ class WishView(View):
     @login_decorator
     def post(self, request):
         try:
-            food_id = request.GET['food_id']
-            user    = request.users
-            food    = Food.objects.get(id=food_id)
+            data = json.loads(request.body)
+            user = request.users
+            food = Food.objects.get(id=data['food_id'])
 
-            if Wish.objects.filter(user=user, food=food_id).exists():
-                return JsonResponse({'message':'FOOD INVALID'}, status=400)
+            if Wish.objects.filter(user=user, food=data['food_id']).exists():
+                return JsonResponse({'message':'DUPLICATED_FOOD'}, status=400)
 
-            wish = Wish(
-                user=user,
-                food=food
-            )
-
+            wish = Wish(user=user,food=food)
             wish.save()
         
             return JsonResponse({'message':'SUCCESS'}, status=201)
@@ -39,10 +35,10 @@ class WishView(View):
     @login_decorator
     def delete(self, request):
         try:
-            food_id = request.GET['food_id']
-            food    = Food.objects.get(id=food_id)
-            user    = request.users
-            wish    = Wish.objects.get(user=user, food=food)
+            data = json.loads(request.body)
+            food = Food.objects.get(id=data['food_id'])
+            user = request.users
+            wish = Wish.objects.get(user=user, food=food)
 
             wish.delete()
         
