@@ -43,8 +43,8 @@ class Migration(migrations.Migration):
                 ('star_score', models.DecimalField(decimal_places=1, max_digits=2)),
                 ('review_count', models.PositiveIntegerField()),
                 ('detail_image', models.URLField()),
-                ('create_at', models.DateTimeField()),
-                ('update_at', models.DateTimeField()),
+                ('create_at', models.DateTimeField(auto_now_add=True)),
+                ('update_at', models.DateTimeField(auto_now=True)),
                 ('categories', models.ManyToManyField(through='products.CategoryFood', to='products.Category')),
             ],
             options={
