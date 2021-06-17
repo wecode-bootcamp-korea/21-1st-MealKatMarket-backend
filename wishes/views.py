@@ -22,10 +22,6 @@ class WishView(View):
         
             return JsonResponse({'message':'SUCCESS'}, status=201)
         
-        except Food.DoesNotExist:
-            return JsonResponse({'message':'NOT EXIST'}, status=404)
-        except Food.MultipleObjectsReturned:
-            return JsonResponse({'message':'MULTIPLE EXIST'}, status=400)
         except IntegrityError:
             return JsonResponse({'message':'FOOD INVALID'}, status=400)
     
@@ -35,30 +31,27 @@ class WishView(View):
             wish = Wish.objects.get(user=request.users, food_id=food_id)
             wish.delete()
         
-            return JsonResponse({'message':'SUCCESS'}, status=200)
+            return JsonResponse({'message':'NOT_CONTENT'}, status=204)
         
-        except Food.DoesNotExist:
+        except Wish.DoesNotExist:
            return JsonResponse({'message':'NOT EXIST'}, status=404)
 
     @login_decorator
     def get(self, request):
-        try:
-            wishes = Wish.objects.filter(user = request.users)
+        wishes = Wish.objects.filter(user = request.users)
             
-            if wishes:
-                result  = [{
-                  'name'             : wish.food.name,
-                  'price'            : wish.food.price,
-                  'discount'         : wish.food.discount,
-                  'discounted_price' : wish.food.discounted_price,
-                  'star_score'       : wish.food.star_score,
-                  'review_count'     : wish.food.review_count,
-                  'detail_image'     : wish.food.detail_image,
-                  'create_at'        : wish.food.create_at,
-                  'update_at'        : wish.food.update_at,
-                  'image'            : wish.food.foodimage_set.filter(food=wish.food).first().image_url
-                } for wish in wishes] if wishes else []
+        if wishes:
+            result  = [{
+                'name'             : wish.food.name,
+                'price'            : wish.food.price,
+                'discount'         : wish.food.discount,
+                'discounted_price' : wish.food.discounted_price,
+                'star_score'       : wish.food.star_score,
+                'review_count'     : wish.food.review_count,
+                'detail_image'     : wish.food.detail_image,
+                'create_at'        : wish.food.create_at,
+                'update_at'        : wish.food.update_at,
+                'image'            : wish.food.foodimage_set.filter(food=wish.food).first().image_url
+            } for wish in wishes] if wishes else []
 
-            return JsonResponse({'message':result}, status = 200)
-        except Wish.DoesNotExist:
-           return JsonResponse({'message':'NOT EXIST'}, status=404)
+        return JsonResponse({'wish_list':result}, status = 200)
