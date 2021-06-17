@@ -6,7 +6,6 @@ from django.db.utils  import IntegrityError
 
 from .models         import Wish
 from products.models import Food
-from users.models    import User
 from users.utils     import login_decorator
 
 class WishView(View):
@@ -14,13 +13,11 @@ class WishView(View):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            user = request.users
-            food = Food.objects.get(id=data['food_id'])
 
-            if Wish.objects.filter(user=user, food=data['food_id']).exists():
+            if Wish.objects.filter(user=request.users, food_id=data['food_id']).exists():
                 return JsonResponse({'message':'DUPLICATED_FOOD'}, status=400)
 
-            wish = Wish(user=user,food=food)
+            wish = Wish(user=request.users,food_id=data['food_id'])
             wish.save()
         
             return JsonResponse({'message':'SUCCESS'}, status=201)
@@ -35,10 +32,7 @@ class WishView(View):
     @login_decorator
     def delete(self, request, food_id):
         try:
-            food = Food.objects.get(id=food_id)
-            user = request.users
-            wish = Wish.objects.get(user=user, food=food)
-
+            wish = Wish.objects.get(user=request.users, food_id=food_id)
             wish.delete()
         
             return JsonResponse({'message':'SUCCESS'}, status=200)
@@ -49,10 +43,9 @@ class WishView(View):
     @login_decorator
     def get(self, request):
         try:
-            user  = request.users
-            wishes = Wish.objects.filter(user = user)
+            wishes = Wish.objects.filter(user = request.users)
             
-            if wishes.exists():
+            if wishes:
                 result  = [{
                   'name'             : wish.food.name,
                   'price'            : wish.food.price,
@@ -64,9 +57,7 @@ class WishView(View):
                   'create_at'        : wish.food.create_at,
                   'update_at'        : wish.food.update_at,
                   'image'            : wish.food.foodimage_set.filter(food=wish.food).first().image_url
-                } for wish in wishes]
-            else:
-                result=[]
+                } for wish in wishes] if wishes else []
 
             return JsonResponse({'message':result}, status = 200)
         except Wish.DoesNotExist:
