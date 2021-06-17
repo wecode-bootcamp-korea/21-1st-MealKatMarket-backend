@@ -97,3 +97,26 @@ class WishFoodView(View):
         result = (True if Wish.objects.filter(user=request.users, food_id=food_id) else False)
 
         return JsonResponse({'wish_status' : result}, status=200)
+
+class SearchView(View):
+       def get(self, request):
+            food_search = request.GET.get('food_search', None)
+
+            if not food_search:
+                return JsonResponse({'product_list' : []}, status=200)
+
+            foods = Food.objects.filter(name__icontains=food_search)
+            product_list = [{
+                'id'                    : foods.id,
+                'title_name'            : foods.name,
+                'price'                 : foods.price,
+                'detail_image'          : foods.detail_image.first().image_url,
+                'discount'              : foods.discount,
+                'discounted_price'      : foods.discounted_price,
+                'review_count'          : foods.review_count
+            } for food in foods] if foods else []
+                    
+            return JsonResponse({'product_list' : product_list}, status=200)
+
+
+            
