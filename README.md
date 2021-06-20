@@ -11,6 +11,10 @@
 
 ## 💻 Back-end Work Details
 ### 김성규
+- `Food List View`
+    - 상품 카테고리별 분류기능 구현
+    - 상품 별점순, 리뷰순 정렬 기능 구현
+    - pagination 기능 구현
 
 ### 김혜지
 - `SignUp, LogIn`
