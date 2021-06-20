@@ -6,7 +6,7 @@ from django.http            import JsonResponse
 from django.views           import View
 from django.db.models       import Q
 
-from .models       import Food
+from .models       import CategoryFood, Food
 from wishes.models import Wish
 
 class FoodlistView(View):
@@ -48,7 +48,7 @@ class FoodView(View):
             recomanded_foods = Food.objects.filter(
                 categoryfood__category_id=food.categoryfood_set.first().id
             )
-
+            
             required_option = [{
                     'id'      : required_option.id,
                     'food_id' : food.id,
@@ -104,7 +104,7 @@ class SearchView(View):
 
             if not food_search:
                 return JsonResponse({'product_list' : []}, status=200)
-
+ 
             foods = Food.objects.filter(name__icontains=food_search)
             product_list = [{
                 'id'                    : foods.id,
@@ -118,5 +118,10 @@ class SearchView(View):
                     
             return JsonResponse({'product_list' : product_list}, status=200)
 
+class FoodAllView(View):
+    def get(self, request):
+        foods = Food.objects.all()
 
-            
+        result = [{'id':food.id,'name':food.name} for food in foods]
+
+        return JsonResponse({'result':result}, status = 200)

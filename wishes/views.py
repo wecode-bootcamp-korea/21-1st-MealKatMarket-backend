@@ -39,19 +39,18 @@ class WishView(View):
     @login_decorator
     def get(self, request):
         wishes = Wish.objects.filter(user = request.users)
-            
-        if wishes:
-            result  = [{
-                'name'             : wish.food.name,
-                'price'            : wish.food.price,
-                'discount'         : wish.food.discount,
-                'discounted_price' : wish.food.discounted_price,
-                'star_score'       : wish.food.star_score,
-                'review_count'     : wish.food.review_count,
-                'detail_image'     : wish.food.detail_image,
-                'create_at'        : wish.food.create_at,
-                'update_at'        : wish.food.update_at,
-                'image'            : wish.food.foodimage_set.filter(food=wish.food).first().image_url
-            } for wish in wishes] if wishes else []
+        
+        result  = ([{
+            'name'             : wish.food.name,
+            'price'            : wish.food.price,
+            'discount'         : wish.food.discount,
+            'discounted_price' : wish.food.discounted_price,
+            'star_score'       : wish.food.star_score,
+            'review_count'     : wish.food.review_count,
+            'detail_image'     : wish.food.detail_image,
+            'create_at'        : wish.food.create_at,
+            'update_at'        : wish.food.update_at,
+            'image'            : wish.food.foodimage_set.filter(food=wish.food).first().image_url
+        } for wish in wishes] if wishes else [])
 
         return JsonResponse({'wish_list':result}, status = 200)
